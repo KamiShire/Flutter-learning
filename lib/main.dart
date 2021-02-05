@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_udemy/answer.dart';
-
-import './question.dart';
+import './quiz.dart';
+import './result.dart';
 
 // Function called to start the app
 void main() => runApp(MyApp());
@@ -20,6 +19,16 @@ class MyApp extends StatefulWidget {
 /// Mettendo l'underscore prima del nome si rende la classe privata
 class _MyAppState extends State<MyApp> {
     var _questionIndex = 0;
+    final _questions = const [
+      {
+        'questionText': 'What\'s the REAL tomato sauce according to the scientific community?',
+        'answers': ['A', 'b', 'c', 'd']
+      },
+      {
+        'questionText': 'Are you sure?',
+        'answers': ['Errrr', 'F', 'G', 'H']
+      },
+    ];
 
     void _answerQuestion() {
       /*
@@ -27,39 +36,33 @@ class _MyAppState extends State<MyApp> {
         chiama il build del widget a cui si riferirisce
         quindi fa i render del widget.
        */
-      setState(() {
-        _questionIndex = _questionIndex + 1;
-      });
-
+      if (_questionIndex < _questions.length) {
+        setState(() {
+          _questionIndex = _questionIndex + 1;
+        });
+      }
       print("Button pressed");
+    }
+
+    void resetQuiz() {
+      setState(() {
+        _questionIndex = 0;
+      });
+      print("reset called");
     }
 
     @override
     Widget build(BuildContext context) {
-      const questions = [
-        {
-          'questionText': 'What\'s the REAL tomato sauce according to the scientific community?',
-          'answers': ['A', 'b', 'c', 'd']
-        },
-        {
-          'questionText': 'Are you sure?',
-          'answers': ['Errrr', 'F', 'G', 'H']
-        },
-      ];
       return MaterialApp(
         home: Scaffold(
           appBar: AppBar(title: Text("Important Question")),
-          body: Column(
-            children: <Widget>[
-              Question(
-                  questions.elementAt(_questionIndex)['questionText']
-              ),
-              // ... prende una lista, ci toglie li elementi e li mette nella lista che wrappa
-              ...(questions[_questionIndex]['answers'] as List<String>).map((answer) {
-                return Answer(text: answer, callback: _answerQuestion);
-              }).toList()
-            ],
-          ),
+          body: _questionIndex < _questions.length ?
+          Quiz(
+                questionIndex: _questionIndex,
+                questions:_questions,
+                answerQuestion: _answerQuestion)
+            :
+          Result(resultText: "Done", resetFun: resetQuiz),
         )
       );
     }
