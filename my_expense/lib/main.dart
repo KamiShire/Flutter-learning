@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
+import 'widgets/home.dart';
 
-void main() => runApp(MyHomePage());
 
+void main() => runApp(Home());
 
-class MyHomePage extends StatelessWidget {
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Center(
-              child: Text("MyExpenses")
-          )
-      ),
-      body: Column(
-        children: <Widget>[
-          Card(
-            child: Text("CHART"),
-          ),
-          Card(
-            child: Text("TX LIST"),
-          )
-        ],
-      ),
+    return MaterialApp(
+      title: "MyExpenses",
+      home: MyHomePage()
     );
   }
 }
+
+
 
