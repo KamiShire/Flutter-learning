@@ -11,7 +11,8 @@ class Home extends StatelessWidget {
       title: "MyExpenses",
       home: MyHomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.purple,
       ),
     );
   }

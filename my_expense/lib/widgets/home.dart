@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_expense/model/transaction.dart';
+import 'package:my_expense/widgets/chart.dart';
 import 'package:my_expense/widgets/new_transaction.dart';
 import 'package:my_expense/widgets/transaction_list.dart';
 
@@ -14,16 +15,29 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTxs = [];
 
-  void _addTransaction(String title, double amount) {
+  get recentTxs {
+    return _userTxs.where((element) {
+      return element.date.isAfter(
+          DateTime.now().subtract(Duration(days: 7))
+      );
+    }).toList();
+  }
+   void _addTransaction(String title, double amount, DateTime date) {
     final tx = Transaction(
         id: DateTime.now().toString(),
         title: title,
         amount: amount,
-        date: DateTime.now()
+        date: date
     );
 
     setState(() {
       _userTxs.add(tx);
+    });
+  }
+
+  void _deleteTx(String id) {
+    setState(() {
+      _userTxs.removeWhere((element) => element.id == id);
     });
   }
 
@@ -56,14 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Card(
-              child: Container(
-                  width: double.infinity,
-                  child: Text("CHART")
-              ),
-              elevation: 10,
-            ),
-            TransactionList(userTxs: _userTxs),
+            Chart(recentTxs),
+            TransactionList(userTxs: _userTxs, removeTx: _deleteTx),
           ],
         ),
       ),
