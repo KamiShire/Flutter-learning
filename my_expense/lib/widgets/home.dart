@@ -1,12 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_expense/widgets/UserTransactions.dart';
+import 'package:my_expense/model/transaction.dart';
 import 'package:my_expense/widgets/new_transaction.dart';
-import 'file:///C:/Sviluppo/AndroidStudioWorkspace/flutter-learning/my_expense/lib/model/transaction.dart';
-import 'package:my_expense/widgets/transation_list.dart';
+import 'package:my_expense/widgets/transaction_list.dart';
 
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _userTxs = [];
+
+  void _addTransaction(String title, double amount) {
+    final tx = Transaction(
+        id: DateTime.now().toString(),
+        title: title,
+        amount: amount,
+        date: DateTime.now()
+    );
+
+    setState(() {
+      _userTxs.add(tx);
+    });
+  }
+
+  void _startAddNewTx(BuildContext ctx) {
+    showModalBottomSheet(context: ctx, builder: (_) {
+      return GestureDetector(
+          child: NewTransaction(addTransactionFun: _addTransaction),
+        onTap: () {},
+        behavior: HitTestBehavior.opaque,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +43,13 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
           title: Center(
               child: Text("MyExpenses")
-          )
+          ),
+          actions: <Widget> [
+            IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTx(context)
+            )
+          ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -28,9 +63,14 @@ class MyHomePage extends StatelessWidget {
               ),
               elevation: 10,
             ),
-            UserTransactions()
+            TransactionList(userTxs: _userTxs),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _startAddNewTx(context),
       ),
     );
   }
